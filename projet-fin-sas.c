@@ -18,31 +18,35 @@ typedef struct
 
 int genererIdAuto()
 {
-    static int idCmp = 1;
+    static int idCmp = 11;
     return idCmp++;
 }
 
 int ajouterJoueur(Joueur equipe[LIST_LENGHT])
 {
-    static int joueurCmp = 0;
+    static int joueurCmp = 10;
     equipe[joueurCmp].idJoueur = genererIdAuto();
     getchar();
     printf("\nEntrer le nom de joueur : ");
     fgets(equipe[joueurCmp].nomJoueur, sizeof(equipe->nomJoueur), stdin);
+    equipe[joueurCmp].nomJoueur[strcspn(equipe[joueurCmp].nomJoueur, "\n")] = 0;
     printf("\nEntrer le numero Maillot de joueur : ");
     scanf("%d", &(equipe[joueurCmp].numeroMaillot));
     getchar();
     printf("\nEntrer le poste de joueur (gardien, defenseur, milieu, attaquant) : ");
     fgets(equipe[joueurCmp].posteJoueur, sizeof(equipe->posteJoueur), stdin);
+    equipe[joueurCmp].posteJoueur[strcspn(equipe[joueurCmp].posteJoueur, "\n")] = 0;
     printf("\nEntrer l'age de joueur : ");
     scanf("%d", &(equipe[joueurCmp].ageJoueur));
     printf("\nEntrer le nombre de buts marques par ce joueur : ");
     scanf("%d", &(equipe[joueurCmp].buts));
     getchar();
-    printf("\nEntrer la date d'inscription de joueur (jj/mm/aaaa) : ");
+    printf("\nEntrer la date d'inscription de joueur (jj-mm-aaaa) : ");
     fgets(equipe[joueurCmp].dateInscription, sizeof(equipe->dateInscription), stdin);
+    equipe[joueurCmp].dateInscription[strcspn(equipe[joueurCmp].dateInscription, "\n")] = 0;
     printf("\nEntrer le statut de joueur (titulaire ou remplacant) : ");
     fgets(equipe[joueurCmp].statutJoueur, sizeof(equipe->statutJoueur), stdin);
+    equipe[joueurCmp].statutJoueur[strcspn(equipe[joueurCmp].statutJoueur, "\n")] = 0;
     return joueurCmp++;
 }
 ///////////////////////////////
@@ -140,10 +144,10 @@ int rechercheParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
     return 0;
 }
 
-int rechercheParNom (Joueur equipe[LIST_LENGHT], int joueurNom, int listJoueurLen) {
+int rechercheParNom (Joueur equipe[LIST_LENGHT], char joueurNom[MAX_CHARACTER_SIZE], int listJoueurLen) {
     for (int i=0 ; i<=listJoueurLen ; i++)
     {
-        if (strcmp(equipe[i].nomJoueur, joueurNom))
+        if (strcmp(equipe[i].nomJoueur, joueurNom) == 0)
         {
             return i;
         }
@@ -153,8 +157,21 @@ int rechercheParNom (Joueur equipe[LIST_LENGHT], int joueurNom, int listJoueurLe
 
 void main()
 {
-    Joueur equipe[LIST_LENGHT];
+    Joueur equipe[LIST_LENGHT] = {
+    {1, "Lionel Messi", 10, "Attaquant", 36, 815, "2004-10-16", "titulaire"},
+    {2, "Cristiano Ronaldo", 7, "Attaquant", 40, 900, "2003-08-12", "titulaire"},
+    {3, "Kylian Mbappe", 7, "Attaquant", 26, 220, "2015-12-02", "titulaire"},
+    {4, "Neymar Jr", 10, "Attaquant", 31, 140, "2013-07-03", "remplacant"},
+    {5, "Kevin De Bruyne", 17, "Milieu", 33, 90, "2008-11-25", "titulaire"},
+    {6, "Virgil van Dijk", 4, "Defenseur", 32, 25, "2015-07-01", "titulaire"},
+    {7, "Luka Modric", 10, "Milieu", 37, 45, "2005-11-01", "remplacant"},
+    {8, "Robert Lewandowski", 9, "Attaquant", 36, 350, "2008-03-01", "titulaire"},
+    {9, "Alisson Becker", 1, "Gardien", 31, 0, "2016-07-25", "titulaire"},
+    {10, "Sergio Ramos", 4, "Defenseur", 37, 100, "2004-08-01", "remplacant"}
+    };
+
     int actNmbr;
+    int listJoueurLen = 9;
     do
     {
         printf("\n-----------Gestion d'une Equipe de Football-----------\n");
@@ -172,7 +189,6 @@ void main()
         {
         case 1:
             int ajtActNmbr;
-            int listJoueurLen;
             printf("\n-----------Insertion du joueur-----------\n");
             printf("\n1 - Ajouter un seul joueur");
             printf("\n2 - Ajouter plusieur joueurs\n -> ");
@@ -200,7 +216,7 @@ void main()
         case 2:
             for (int i = 0; i <= listJoueurLen; i++)
             {
-                printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                printf("\n\nJoueur %d :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
             }
 
             int affActNmbr;
@@ -219,7 +235,7 @@ void main()
                     trierAlphabique(equipe, listJoueurLen);
                     for (int i = 0; i <= listJoueurLen; i++)
                     {
-                        printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                        printf("\n\nJoueur %d :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
                     }
 
                     break;
@@ -227,14 +243,14 @@ void main()
                     trierAge(equipe, listJoueurLen);
                     for (int i = 0; i <= listJoueurLen; i++)
                     {
-                        printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                        printf("\n\nJoueur %d :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
                     }
                     break;
                 case 3:
                     afficheJoueurParPoste(equipe, listJoueurLen);
                     for (int i = 0; i <= listJoueurLen; i++)
                     {
-                        printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                        printf("\n\nJoueur %d :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
                     }
                     break;
                 case 0:
@@ -255,7 +271,50 @@ void main()
             /* code */
             break;
         case 5:
-            /* code */
+            int rechActNmbr;
+            int rechercheResltat;
+            printf("\n-----------Rechercher un joueur-----------\n");
+            printf("\n1 - Rechercher par l'id");
+            printf("\n2 - Rechercher par le nom\n -> ");
+            scanf("%d", &rechActNmbr);
+            switch (rechActNmbr)
+            {
+            case 1:
+                int joueurId;
+                printf("Entrer l'id de joueur : ");
+                scanf("%d", &joueurId);
+                rechercheResltat = rechercheParId(equipe, joueurId, listJoueurLen);
+                if (rechercheResltat != 0)
+                {
+                    printf("il exist!");
+                }
+                else
+                {
+                    printf("n' exist pas!");
+                }
+                
+                break;
+            case 2:
+                char joueurNom[MAX_CHARACTER_SIZE];
+                getchar();
+                printf("Entrer le nom de joueur : ");
+                fgets(joueurNom, sizeof(joueurNom), stdin);
+                joueurNom[strcspn(joueurNom, "\n")] = 0;
+                rechercheResltat = rechercheParNom(equipe, joueurNom, listJoueurLen);
+                if (rechercheResltat != 0)
+                {
+                    printf("il exist!");
+                }
+                else
+                {
+                    printf("n' exist pas!");
+                }
+                break;
+
+            default:
+                printf("\nInvalid!");
+                break;
+            }
             break;
         case 6:
             int statActNmbr;
