@@ -4,9 +4,9 @@
 #define LIST_LENGHT 100
 #define MAX_CHARACTER_SIZE 64
 
-typedef struct 
+typedef struct
 {
-    int idJoueur; 
+    int idJoueur;
     char nomJoueur[MAX_CHARACTER_SIZE];
     int numeroMaillot;
     char posteJoueur[MAX_CHARACTER_SIZE];
@@ -16,63 +16,144 @@ typedef struct
     char statutJoueur[MAX_CHARACTER_SIZE];
 } Joueur;
 
-
-int genererIdAuto () 
+int genererIdAuto()
 {
     static int idCmp = 1;
     return idCmp++;
 }
 
-int ajouterJoueur (Joueur listJoueurs[LIST_LENGHT]) 
+int ajouterJoueur(Joueur equipe[LIST_LENGHT])
 {
     static int joueurCmp = 0;
-    listJoueurs[joueurCmp].idJoueur = genererIdAuto();
+    equipe[joueurCmp].idJoueur = genererIdAuto();
     getchar();
     printf("\nEntrer le nom de joueur : ");
-    fgets(listJoueurs[joueurCmp].nomJoueur, sizeof(listJoueurs->nomJoueur), stdin);
+    fgets(equipe[joueurCmp].nomJoueur, sizeof(equipe->nomJoueur), stdin);
     printf("\nEntrer le numero Maillot de joueur : ");
-    scanf("%d", &(listJoueurs[joueurCmp].numeroMaillot));
+    scanf("%d", &(equipe[joueurCmp].numeroMaillot));
     getchar();
     printf("\nEntrer le poste de joueur (gardien, defenseur, milieu, attaquant) : ");
-    fgets(listJoueurs[joueurCmp].posteJoueur, sizeof(listJoueurs->posteJoueur), stdin);
+    fgets(equipe[joueurCmp].posteJoueur, sizeof(equipe->posteJoueur), stdin);
     printf("\nEntrer l'age de joueur : ");
-    scanf("%d", &(listJoueurs[joueurCmp].ageJoueur));    
+    scanf("%d", &(equipe[joueurCmp].ageJoueur));
     printf("\nEntrer le nombre de buts marques par ce joueur : ");
-    scanf("%d", &(listJoueurs[joueurCmp].buts));
+    scanf("%d", &(equipe[joueurCmp].buts));
     getchar();
     printf("\nEntrer la date d'inscription de joueur (jj/mm/aaaa) : ");
-    fgets(listJoueurs[joueurCmp].dateInscription, sizeof(listJoueurs->dateInscription), stdin);
+    fgets(equipe[joueurCmp].dateInscription, sizeof(equipe->dateInscription), stdin);
     printf("\nEntrer le statut de joueur (titulaire ou remplacant) : ");
-    fgets(listJoueurs[joueurCmp].statutJoueur, sizeof(listJoueurs->statutJoueur), stdin);
-    return joueurCmp++;    
+    fgets(equipe[joueurCmp].statutJoueur, sizeof(equipe->statutJoueur), stdin);
+    return joueurCmp++;
 }
+///////////////////////////////
 
+// int ajouterJoueurEnPostTab(Joueur equipeTrierParPost [LIST_LENGHT], Joueur j)
+// {
+//     static int joueurCmp = 0;
+//     equipeTrierParPost[joueurCmp].idJoueur = genererIdAuto();
+//     strcpy(equipeTrierParPost[joueurCmp].nomJoueur, j.nomJoueur);
+//     equipeTrierParPost[joueurCmp].numeroMaillot = j.numeroMaillot;
+//     strcpy(equipeTrierParPost[joueurCmp].posteJoueur, j.posteJoueur);
+//     equipeTrierParPost[joueurCmp].ageJoueur = j.ageJoueur;
+//     equipeTrierParPost[joueurCmp].buts = j.buts;
+//     strcpy(equipeTrierParPost[joueurCmp].dateInscription, j.dateInscription);
+//     strcpy(equipeTrierParPost[joueurCmp].statutJoueur, j.statutJoueur);
+//     return joueurCmp++;
+//}
 
-void swap (Joueur* a, Joueur* b) 
+///////////////////////////////
+
+void swap(Joueur *a, Joueur *b)
 {
     Joueur s = *a;
     *a = *b;
     *b = s;
 }
 
-void trierAlphabique (Joueur listJoueurs[LIST_LENGHT], int listJoueurLen) 
+void trierAlphabique(Joueur equipe[LIST_LENGHT], int listJoueurLen)
 {
-    
-    for (int i=0 ; i<=listJoueurLen ; i++) 
+
+    for (int i = 0; i <= listJoueurLen; i++)
     {
-        for (int j=0 ; j <= listJoueurLen ; j++ ) 
+        for (int j = 0; j <= listJoueurLen; j++)
         {
-            if (strcmp(listJoueurs[i].nomJoueur, listJoueurs[j].nomJoueur)<0)
+            if (strcmp(equipe[i].nomJoueur, equipe[j].nomJoueur) < 0)
             {
-                 swap(&listJoueurs[i], &listJoueurs[j]);
+                swap(&equipe[i], &equipe[j]);
             }
         }
     }
-
 }
 
-void main () {
-    Joueur listJoueurs[LIST_LENGHT];
+void trierAge(Joueur equipe[LIST_LENGHT], int listJoueurLen)
+{
+
+    for (int i = 0; i <= listJoueurLen; i++)
+    {
+        for (int j = 0; j <= listJoueurLen; j++)
+        {
+            if (equipe[i].ageJoueur < equipe[j].ageJoueur)
+            {
+                swap(&equipe[i], &equipe[j]);
+            }
+        }
+    }
+}
+void trierId(Joueur equipe[LIST_LENGHT], int listJoueurLen)
+{
+
+    for (int i = 0; i <= listJoueurLen; i++)
+    {
+        for (int j = 0; j <= listJoueurLen; j++)
+        {
+            if (equipe[i].idJoueur < equipe[j].idJoueur)
+            {
+                swap(&equipe[i], &equipe[j]);
+            }
+        }
+    }
+}
+
+int afficheJoueurParPoste(Joueur equipe[LIST_LENGHT], int listJoueurLen)
+{
+    for (int i = 0; i <= listJoueurLen; i++)
+    {
+        for (int j = 0; j <= listJoueurLen; j++)
+        {
+            if (strcmp(equipe[i].posteJoueur, equipe[j].posteJoueur) < 0)
+            {
+                swap(&equipe[i], &equipe[j]);
+            }
+        }
+    }
+}
+
+
+int rechercheParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen) {
+    for (int i=0 ; i<=listJoueurLen ; i++)
+    {
+        if (equipe[i].idJoueur == joueurId)
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+
+int rechercheParNom (Joueur equipe[LIST_LENGHT], int joueurNom, int listJoueurLen) {
+    for (int i=0 ; i<=listJoueurLen ; i++)
+    {
+        if (strcmp(equipe[i].nomJoueur, joueurNom))
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+
+void main()
+{
+    Joueur equipe[LIST_LENGHT];
     int actNmbr;
     do
     {
@@ -99,56 +180,72 @@ void main () {
             switch (ajtActNmbr)
             {
             case 1:
-                listJoueurLen = ajouterJoueur(listJoueurs);
+                listJoueurLen = ajouterJoueur(equipe);
                 break;
             case 2:
                 int nmbrJoueurAjouter;
                 printf("\nEntrer le nombre de joueurs que veux ajouter :");
                 scanf("%d", &nmbrJoueurAjouter);
-                for (int i=0 ; i<nmbrJoueurAjouter ; i++)
+                for (int i = 0; i < nmbrJoueurAjouter; i++)
                 {
-                    listJoueurLen = ajouterJoueur(listJoueurs);
+                    listJoueurLen = ajouterJoueur(equipe);
                 }
                 break;
-            
+
             default:
                 printf("\nInvalid!");
                 break;
             }
             break;
         case 2:
-            for (int i=0 ; i<=listJoueurLen ; i++)
+            for (int i = 0; i <= listJoueurLen; i++)
             {
-                printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i+1, listJoueurs[i].idJoueur, listJoueurs[i].nomJoueur, listJoueurs[i].numeroMaillot, listJoueurs[i].posteJoueur, listJoueurs[i].ageJoueur, listJoueurs[i].buts, listJoueurs[i].dateInscription, listJoueurs[i].statutJoueur);
+                printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
             }
 
             int affActNmbr;
-            printf("\n-----------Trier du joueurs-----------\n");
-            printf("\n1 - Trier les joueurs par ordre alphabetique");
-            printf("\n2 - Trier les joueurs par age");
-            printf("\n3 - Afficher les joueurs par poste\n -> ");
-            scanf("%d", &affActNmbr);
-
-            switch (affActNmbr)
+            do
             {
-            case 1:
-                trierAlphabique(listJoueurs, listJoueurLen);
-                for (int i=0 ; i<=listJoueurLen ; i++)
-                {
-                    printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i+1, listJoueurs[i].idJoueur, listJoueurs[i].nomJoueur, listJoueurs[i].numeroMaillot, listJoueurs[i].posteJoueur, listJoueurs[i].ageJoueur, listJoueurs[i].buts, listJoueurs[i].dateInscription, listJoueurs[i].statutJoueur);
-                }
+                printf("\n-----------Trier du joueurs-----------\n");
+                printf("\n1 - Trier les joueurs par ordre alphabetique");
+                printf("\n2 - Trier les joueurs par age");
+                printf("\n3 - Afficher les joueurs par poste");
+                printf("\n0 - Exit\n -> ");
+                scanf("%d", &affActNmbr);
 
-                break;
-            case 2:
-                /* code */
-                break;
-            case 3:
-                /* code */
-                break;
-            
-            default:
-                break;
-            }
+                switch (affActNmbr)
+                {
+                case 1:
+                    trierAlphabique(equipe, listJoueurLen);
+                    for (int i = 0; i <= listJoueurLen; i++)
+                    {
+                        printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                    }
+
+                    break;
+                case 2:
+                    trierAge(equipe, listJoueurLen);
+                    for (int i = 0; i <= listJoueurLen; i++)
+                    {
+                        printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                    }
+                    break;
+                case 3:
+                    afficheJoueurParPoste(equipe, listJoueurLen);
+                    for (int i = 0; i <= listJoueurLen; i++)
+                    {
+                        printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i + 1, equipe[i].idJoueur, equipe[i].nomJoueur, equipe[i].numeroMaillot, equipe[i].posteJoueur, equipe[i].ageJoueur, equipe[i].buts, equipe[i].dateInscription, equipe[i].statutJoueur);
+                    }
+                    break;
+                case 0:
+                    trierId(equipe, listJoueurLen);
+                    break;
+
+                default:
+                    printf("\nInvalid!");
+                    break;
+                }
+            } while (affActNmbr != 0);
 
             break;
         case 3:
@@ -161,7 +258,7 @@ void main () {
             /* code */
             break;
         case 6:
-             int statActNmbr;
+            int statActNmbr;
             printf("\n1 - Afficher le nombre total de joueurs dans l'equipe");
             printf("\n2 - Afficher l'age moyen des joueurs");
             printf("\n3 - Afficher les joueurs ayant marque plus de X buts");
@@ -185,7 +282,7 @@ void main () {
             case 5:
                 /* code */
                 break;
-            
+
             default:
                 printf("\nInvalid!");
                 break;
@@ -194,12 +291,10 @@ void main () {
         case 0:
             printf("\nAdios!");
             break;
-        
+
         default:
             break;
         }
 
     } while (actNmbr != 0);
-    
-    
 }
