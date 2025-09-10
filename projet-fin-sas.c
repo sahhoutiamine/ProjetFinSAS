@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <string.h>
 
 #define LIST_LENGHT 100
 #define MAX_CHARACTER_SIZE 64
 
-typedef struct Joueur
+typedef struct 
 {
     int idJoueur; 
     char nomJoueur[MAX_CHARACTER_SIZE];
@@ -44,6 +45,30 @@ int ajouterJoueur (Joueur listJoueurs[LIST_LENGHT])
     printf("\nEntrer le statut de joueur (titulaire ou remplacant) : ");
     fgets(listJoueurs[joueurCmp].statutJoueur, sizeof(listJoueurs->statutJoueur), stdin);
     return joueurCmp++;    
+}
+
+
+void swap (Joueur* a, Joueur* b) 
+{
+    Joueur s = *a;
+    *a = *b;
+    *b = s;
+}
+
+void trierAlphabique (Joueur listJoueurs[LIST_LENGHT], int listJoueurLen) 
+{
+    
+    for (int i=0 ; i<=listJoueurLen ; i++) 
+    {
+        for (int j=0 ; j <= listJoueurLen ; j++ ) 
+        {
+            if (strcmp(listJoueurs[i].nomJoueur, listJoueurs[j].nomJoueur)<0)
+            {
+                 swap(&listJoueurs[i], &listJoueurs[j]);
+            }
+        }
+    }
+
 }
 
 void main () {
@@ -98,11 +123,32 @@ void main () {
             }
 
             int affActNmbr;
-            printf("\n-----------Trier du joueur-----------\n");
+            printf("\n-----------Trier du joueurs-----------\n");
             printf("\n1 - Trier les joueurs par ordre alphabetique");
             printf("\n2 - Trier les joueurs par age");
             printf("\n3 - Afficher les joueurs par poste\n -> ");
             scanf("%d", &affActNmbr);
+
+            switch (affActNmbr)
+            {
+            case 1:
+                trierAlphabique(listJoueurs, listJoueurLen);
+                for (int i=0 ; i<=listJoueurLen ; i++)
+                {
+                    printf("\nJoueur %d :\nL'id : %d\nLe nom : %sLe numero maillot : %d\nLe poste : %sL'age : %d\nNombre de buts : %d\nLa date inscription : %sStatut : %s", i+1, listJoueurs[i].idJoueur, listJoueurs[i].nomJoueur, listJoueurs[i].numeroMaillot, listJoueurs[i].posteJoueur, listJoueurs[i].ageJoueur, listJoueurs[i].buts, listJoueurs[i].dateInscription, listJoueurs[i].statutJoueur);
+                }
+
+                break;
+            case 2:
+                /* code */
+                break;
+            case 3:
+                /* code */
+                break;
+            
+            default:
+                break;
+            }
 
             break;
         case 3:
@@ -116,11 +162,11 @@ void main () {
             break;
         case 6:
              int statActNmbr;
-            printf("\n1 - Afficher le nombre total de joueurs dans l’équipe");
-            printf("\n2 - Afficher l’âge moyen des joueurs");
-            printf("\n3 - Afficher les joueurs ayant marqué plus de X buts");
+            printf("\n1 - Afficher le nombre total de joueurs dans l'equipe");
+            printf("\n2 - Afficher l'age moyen des joueurs");
+            printf("\n3 - Afficher les joueurs ayant marque plus de X buts");
             printf("\n4 - Afficher le meilleur buteur");
-            printf("\n5 - Afficher le joueur le plus jeune et le plus âgé.");
+            printf("\n5 - Afficher le joueur le plus jeune et le plus age.");
             scanf("%d", &statActNmbr);
             switch (statActNmbr)
             {
@@ -157,4 +203,3 @@ void main () {
     
     
 }
-
