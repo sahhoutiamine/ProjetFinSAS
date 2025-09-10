@@ -29,13 +29,13 @@ int ajouterJoueur(Joueur equipe[LIST_LENGHT])
     getchar();
     printf("\nEntrer le nom de joueur : ");
     fgets(equipe[joueurCmp].nomJoueur, sizeof(equipe->nomJoueur), stdin);
-    equipe[joueurCmp].nomJoueur[strcspn(equipe[joueurCmp].nomJoueur, "\n")] = 0;
+    equipe[joueurCmp].nomJoueur[strcspn(equipe[joueurCmp].nomJoueur, "\n")] = '\0';
     printf("\nEntrer le numero Maillot de joueur : ");
     scanf("%d", &(equipe[joueurCmp].numeroMaillot));
     getchar();
     printf("\nEntrer le poste de joueur (gardien, defenseur, milieu, attaquant) : ");
     fgets(equipe[joueurCmp].posteJoueur, sizeof(equipe->posteJoueur), stdin);
-    equipe[joueurCmp].posteJoueur[strcspn(equipe[joueurCmp].posteJoueur, "\n")] = 0;
+    equipe[joueurCmp].posteJoueur[strcspn(equipe[joueurCmp].posteJoueur, "\n")] = '\0';
     printf("\nEntrer l'age de joueur : ");
     scanf("%d", &(equipe[joueurCmp].ageJoueur));
     printf("\nEntrer le nombre de buts marques par ce joueur : ");
@@ -43,10 +43,10 @@ int ajouterJoueur(Joueur equipe[LIST_LENGHT])
     getchar();
     printf("\nEntrer la date d'inscription de joueur (jj-mm-aaaa) : ");
     fgets(equipe[joueurCmp].dateInscription, sizeof(equipe->dateInscription), stdin);
-    equipe[joueurCmp].dateInscription[strcspn(equipe[joueurCmp].dateInscription, "\n")] = 0;
+    equipe[joueurCmp].dateInscription[strcspn(equipe[joueurCmp].dateInscription, "\n")] = '\0';
     printf("\nEntrer le statut de joueur (titulaire ou remplacant) : ");
     fgets(equipe[joueurCmp].statutJoueur, sizeof(equipe->statutJoueur), stdin);
-    equipe[joueurCmp].statutJoueur[strcspn(equipe[joueurCmp].statutJoueur, "\n")] = 0;
+    equipe[joueurCmp].statutJoueur[strcspn(equipe[joueurCmp].statutJoueur, "\n")] = '\0';
     return joueurCmp++;
 }
 ///////////////////////////////
@@ -145,15 +145,36 @@ int rechercheParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
 }
 
 int rechercheParNom (Joueur equipe[LIST_LENGHT], char joueurNom[MAX_CHARACTER_SIZE], int listJoueurLen) {
-    for (int i=0 ; i<=listJoueurLen ; i++)
+    for (int i=0 ; i<=listJoueurLen+1 ; i++)
     {
-        if (strcmp(equipe[i].nomJoueur, joueurNom) == 0)
+        if (strcmp(equipe[i-1].nomJoueur, joueurNom) == 0)
         {
             return i;
         }
     }
     return 0;
 }
+int supprimerParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen) {
+    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
+    if (rechercheResultat != 0) 
+    {
+        for (int i = rechercheResultat ; i<=listJoueurLen ; i++)
+        {
+            equipe[i].idJoueur, equipe[i+1].idJoueur;
+            strcpy(equipe[i].nomJoueur, equipe[i+1].nomJoueur);
+            equipe[i].numeroMaillot, equipe[i+1].numeroMaillot;
+            strcpy(equipe[i].posteJoueur, equipe[i+1].posteJoueur);
+            equipe[i].ageJoueur, equipe[i+1].ageJoueur;
+            equipe[i].buts, equipe[i+1].buts;
+            strcpy(equipe[i].dateInscription, equipe[i+1].dateInscription);
+            strcpy(equipe[i].statutJoueur, equipe[i+1].statutJoueur);
+        }
+        listJoueurLen--;
+        return 1;
+    }
+    return 0;
+}
+
 
 void main()
 {
@@ -268,7 +289,19 @@ void main()
             /* code */
             break;
         case 4:
-            /* code */
+            int joueurId;
+            int supprissionResultat;
+            printf("Entrer l'id de joueur : ");
+            scanf("%d", &joueurId);
+            supprissionResultat = supprimerParId(equipe, joueurId, listJoueurLen);
+            if (supprissionResultat != 0)
+            {
+                printf("supprission avec secces!");
+            }
+            else
+            {
+                printf("erreur de suprission!");
+            }
             break;
         case 5:
             int rechActNmbr;
@@ -299,7 +332,7 @@ void main()
                 getchar();
                 printf("Entrer le nom de joueur : ");
                 fgets(joueurNom, sizeof(joueurNom), stdin);
-                joueurNom[strcspn(joueurNom, "\n")] = 0;
+                joueurNom[strcspn(joueurNom, "\n")] = '\0';
                 rechercheResltat = rechercheParNom(equipe, joueurNom, listJoueurLen);
                 if (rechercheResltat != 0)
                 {
@@ -357,3 +390,34 @@ void main()
 
     } while (actNmbr != 0);
 }
+
+
+
+// for (int i = 0 ; i < cmp ; i++) 
+//         {
+//             if (strcmp(contact[i].nom, nomContSupp) == 0) 
+//             {
+//                 for (int j = i ; j < cmp ; j++)
+//                 {
+//                     strcpy(contact[j].nom, contact[j+1].nom);
+//                     strcpy(contact[j].numTel, contact[j+1].numTel);
+//                     strcpy(contact[j].email, contact[j+1].email);
+//                 }
+
+
+//                 cmp--;
+//                 break;
+
+
+//             }
+//             else
+//             {
+//                 isDel = 0;
+                
+//             }
+               
+//         }
+//         if (isDel == 0)
+//         {
+//             printf("\nn'exsit pas!");
+//         }
