@@ -173,13 +173,40 @@ int supprimerParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
     }
     return -1;
 }
+int modifierPostParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauPoste[MAX_CHARACTER_SIZE]) {
+    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
+    if (rechercheResultat != 0) 
+    {
+        strcpy(equipe[rechercheResultat].posteJoueur, noveauPoste);
+        return 1;
+    }
+    return 0;
+}
+int modifierAgeParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauAge) {
+    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
+    if (rechercheResultat != 0) 
+    {
+        equipe[rechercheResultat].ageJoueur = noveauAge;
+        return 1;
+    }
+    return 0;
+}
+int modifierButsParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauButs) {
+    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
+    if (rechercheResultat != 0) 
+    {
+        equipe[rechercheResultat].buts = noveauButs;
+        return 1;
+    }
+    return 0;
+}
 
 
 void main()
 {
     Joueur equipe[LIST_LENGHT] = {
-    {1, "Lionel Messi", 10, "Attaquant", 36, 815, "2004-10-16", "titulaire"},
-    {2, "Cristiano Ronaldo", 7, "Attaquant", 40, 900, "2003-08-12", "titulaire"},
+    {1, "Lionel Messi(GOAT)", 10, "Attaquant", 36, 815, "2004-10-16", "titulaire"},
+    {2, "Cristiano Ronaldo(GOAT)", 7, "Attaquant", 40, 900, "2003-08-12", "titulaire"},
     {3, "Kylian Mbappe", 7, "Attaquant", 26, 220, "2015-12-02", "titulaire"},
     {4, "Neymar Jr", 10, "Attaquant", 31, 140, "2013-07-03", "remplacant"},
     {5, "Kevin De Bruyne", 17, "Milieu", 33, 90, "2008-11-25", "titulaire"},
@@ -285,7 +312,77 @@ void main()
 
             break;
         case 3:
-            /* code */
+            int idJoueurModifier;
+            printf("\n-----------Modifier un joueur-----------\n");
+            printf("\nEntrer l'id de joueur qui peut modifier : ");
+            scanf("%d", &idJoueurModifier);
+            int modActNmbr;
+            int modifierResultat;
+            
+            do
+            {
+                printf("\n1 - Modifier le poste de %s", equipe[idJoueurModifier-1].nomJoueur);
+                printf("\n2 - Modifier l'age de %s", equipe[idJoueurModifier-1].nomJoueur);
+                printf("\n3 - Modifier le nombre de buts marques par %s", equipe[idJoueurModifier-1].nomJoueur);
+                printf("\n0 - Exit\n -> ");
+                scanf("%d", &modActNmbr);
+
+                switch (modActNmbr)
+                {
+                case 1:
+                    char noveauPoste[MAX_CHARACTER_SIZE];
+                    getchar();
+                    printf("\nEntrer le noveau post de %s :", equipe[idJoueurModifier-1].nomJoueur);
+                    fgets(noveauPoste, sizeof(noveauPoste), stdin);
+                    noveauPoste[strcspn(noveauPoste, "\n")] = '\0';
+                    modifierResultat = modifierPostParId(equipe, idJoueurModifier, listJoueurLen, noveauPoste);
+                    if (modifierResultat != 0)
+                    {
+                        printf("\nmodifie avec seccese!\n");
+                    }
+                    else
+                    {
+                        printf("\nn' pas modifier!\n");
+                    }
+                    
+                    break;
+                case 2:
+                    int noveauAge;
+                    printf("\nEntrer le noveau age de %s :", equipe[idJoueurModifier-1].nomJoueur);
+                    scanf("%d", &noveauAge);
+                    modifierResultat = modifierAgeParId(equipe, idJoueurModifier, listJoueurLen, noveauAge);
+                    if (modifierResultat != 0)
+                    {
+                        printf("\nmodifie avec seccese!\n");
+                    }
+                    else
+                    {
+                        printf("\nn' pas modifier!\n");
+                    }
+                    break;
+                case 3:
+                    int noveauButs;
+                    printf("\nEntrer le noveau buts de %s :", equipe[idJoueurModifier-1].nomJoueur);
+                    scanf("%d", &noveauButs);
+                    modifierResultat = modifierButsParId(equipe, idJoueurModifier, listJoueurLen, noveauButs);
+                    if (modifierResultat != 0)
+                    {
+                        printf("\nmodifie avec seccese!\n");
+                    }
+                    else
+                    {
+                        printf("\nn' pas modifier!\n");
+                    }
+                    break;
+                case 0:
+                    break;
+
+                default:
+                    printf("\nInvalid!");
+                    break;
+                }
+            } while (affActNmbr != 0);
+
             break;
         case 4:
             int joueurId;
