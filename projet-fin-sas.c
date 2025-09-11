@@ -231,9 +231,9 @@ int joueurPlusAges (Joueur equipe[LIST_LENGHT], int listJoueurLen)
     int plusAgesIdx = 0;
     for(int i=1 ; i<=listJoueurLen ; i++)
     {
-        if (equipe[i].buts > plusAges)
+        if (equipe[i].ageJoueur > plusAges)
         {
-            plusAges = equipe[i].buts;
+            plusAges = equipe[i].ageJoueur;
             plusAgesIdx = i ;
         }
     }
@@ -245,9 +245,9 @@ int joueurplusJeune (Joueur equipe[LIST_LENGHT], int listJoueurLen)
     int plusJeuneIdx = 0;
     for(int i=1 ; i<=listJoueurLen ; i++)
     {
-        if (equipe[i].buts < plusJeune)
+        if (equipe[i].ageJoueur < plusJeune)
         {
-            plusJeune = equipe[i].buts;
+            plusJeune = equipe[i].ageJoueur;
             plusJeuneIdx = i ;
         }
     }
