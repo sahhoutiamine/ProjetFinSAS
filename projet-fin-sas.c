@@ -151,6 +151,7 @@ int supprimerParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
     {
         for (int i = rechercheResultat; i < listJoueurLen; i++)
         {
+            equipe[i].idJoueur = equipe[i + 1].idJoueur;
             strcpy(equipe[i].nomJoueur, equipe[i + 1].nomJoueur);
             equipe[i].numeroMaillot = equipe[i + 1].numeroMaillot;
             strcpy(equipe[i].posteJoueur, equipe[i + 1].posteJoueur);
