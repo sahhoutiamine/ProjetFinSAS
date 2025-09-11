@@ -160,19 +160,18 @@ int supprimerParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
     {
         for (int i = rechercheResultat ; i<=listJoueurLen ; i++)
         {
-            equipe[i].idJoueur, equipe[i+1].idJoueur;
             strcpy(equipe[i].nomJoueur, equipe[i+1].nomJoueur);
-            equipe[i].numeroMaillot, equipe[i+1].numeroMaillot;
+            equipe[i].numeroMaillot = equipe[i+1].numeroMaillot;
             strcpy(equipe[i].posteJoueur, equipe[i+1].posteJoueur);
-            equipe[i].ageJoueur, equipe[i+1].ageJoueur;
-            equipe[i].buts, equipe[i+1].buts;
+            equipe[i].ageJoueur = equipe[i+1].ageJoueur;
+            equipe[i].buts = equipe[i+1].buts;
             strcpy(equipe[i].dateInscription, equipe[i+1].dateInscription);
             strcpy(equipe[i].statutJoueur, equipe[i+1].statutJoueur);
         }
-        listJoueurLen--;
-        return 1;
+        return --listJoueurLen;
+        
     }
-    return 0;
+    return -1;
 }
 
 
@@ -291,18 +290,21 @@ void main()
         case 4:
             int joueurId;
             int supprissionResultat;
+            printf("\n-----------Supprimer un joueur-----------\n");
             printf("Entrer l'id de joueur : ");
             scanf("%d", &joueurId);
             supprissionResultat = supprimerParId(equipe, joueurId, listJoueurLen);
-            if (supprissionResultat != 0)
+            if (supprissionResultat != -1)
             {
-                printf("supprission avec secces!");
+                printf("supprission avec secces!\n");
+                listJoueurLen = supprissionResultat;
             }
             else
             {
-                printf("erreur de suprission!");
+                printf("erreur de suprission!\n");
             }
             break;
+            
         case 5:
             int rechActNmbr;
             int rechercheResltat;
@@ -319,11 +321,11 @@ void main()
                 rechercheResltat = rechercheParId(equipe, joueurId, listJoueurLen);
                 if (rechercheResltat != 0)
                 {
-                    printf("il exist!");
+                    printf("il exist!\n");
                 }
                 else
                 {
-                    printf("n' exist pas!");
+                    printf("n' exist pas!\n");
                 }
                 
                 break;
@@ -393,31 +395,3 @@ void main()
 
 
 
-// for (int i = 0 ; i < cmp ; i++) 
-//         {
-//             if (strcmp(contact[i].nom, nomContSupp) == 0) 
-//             {
-//                 for (int j = i ; j < cmp ; j++)
-//                 {
-//                     strcpy(contact[j].nom, contact[j+1].nom);
-//                     strcpy(contact[j].numTel, contact[j+1].numTel);
-//                     strcpy(contact[j].email, contact[j+1].email);
-//                 }
-
-
-//                 cmp--;
-//                 break;
-
-
-//             }
-//             else
-//             {
-//                 isDel = 0;
-                
-//             }
-               
-//         }
-//         if (isDel == 0)
-//         {
-//             printf("\nn'exsit pas!");
-//         }
