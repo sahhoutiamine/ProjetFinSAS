@@ -186,9 +186,14 @@ int modifierAgeParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen
 }
 int modifierButsParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauButs)
 {
+    char nomAvecStar;
     int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
     if (rechercheResultat != -1)
     {
+        if (equipe[rechercheResultat].buts + 10 <= noveauButs) {
+            nomAvecStar = strcat(equipe[rechercheResultat].nomJoueur, " (Star!)");
+            strcpy(equipe[rechercheResultat].nomJoueur, nomAvecStar);
+        }
         equipe[rechercheResultat].buts = noveauButs;
         return 1;
     }
