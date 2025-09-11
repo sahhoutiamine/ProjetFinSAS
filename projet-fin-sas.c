@@ -16,16 +16,22 @@ typedef struct
     char statutJoueur[MAX_CHARACTER_SIZE];
 } Joueur;
 
-int genererIdAuto()
+void viderBufferEntree()
 {
-    static int idCmp = 11;
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+int genererIdAuto(int listJoueurLen)
+{
+    int idCmp = listJoueurLen + 1;
     return idCmp++;
 }
 
-int ajouterJoueur(Joueur equipe[LIST_LENGHT])
+int ajouterJoueur(Joueur equipe[LIST_LENGHT], int listJoueurLen)
 {
-    static int joueurCmp = 10;
-    equipe[joueurCmp].idJoueur = genererIdAuto();
+    int joueurCmp = listJoueurLen + 1;
+    equipe[joueurCmp].idJoueur = genererIdAuto(listJoueurLen);
     getchar();
     printf("\nEntrer le nom de joueur : ");
     fgets(equipe[joueurCmp].nomJoueur, sizeof(equipe->nomJoueur), stdin);
@@ -49,23 +55,6 @@ int ajouterJoueur(Joueur equipe[LIST_LENGHT])
     equipe[joueurCmp].statutJoueur[strcspn(equipe[joueurCmp].statutJoueur, "\n")] = '\0';
     return joueurCmp++;
 }
-///////////////////////////////
-
-// int ajouterJoueurEnPostTab(Joueur equipeTrierParPost [LIST_LENGHT], Joueur j)
-// {
-//     static int joueurCmp = 0;
-//     equipeTrierParPost[joueurCmp].idJoueur = genererIdAuto();
-//     strcpy(equipeTrierParPost[joueurCmp].nomJoueur, j.nomJoueur);
-//     equipeTrierParPost[joueurCmp].numeroMaillot = j.numeroMaillot;
-//     strcpy(equipeTrierParPost[joueurCmp].posteJoueur, j.posteJoueur);
-//     equipeTrierParPost[joueurCmp].ageJoueur = j.ageJoueur;
-//     equipeTrierParPost[joueurCmp].buts = j.buts;
-//     strcpy(equipeTrierParPost[joueurCmp].dateInscription, j.dateInscription);
-//     strcpy(equipeTrierParPost[joueurCmp].statutJoueur, j.statutJoueur);
-//     return joueurCmp++;
-//}
-
-///////////////////////////////
 
 void swap(Joueur *a, Joueur *b)
 {
@@ -132,77 +121,82 @@ int afficheJoueurParPoste(Joueur equipe[LIST_LENGHT], int listJoueurLen)
     }
 }
 
-
-int rechercheParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen) {
-    for (int i=0 ; i<=listJoueurLen ; i++)
+int rechercheParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
+{
+    for (int i = 0; i <= listJoueurLen; i++)
     {
         if (equipe[i].idJoueur == joueurId)
         {
             return i;
         }
     }
-    return 0;
+    return -1;
 }
 
-int rechercheParNom (Joueur equipe[LIST_LENGHT], char joueurNom[MAX_CHARACTER_SIZE], int listJoueurLen) {
-    for (int i=0 ; i<=listJoueurLen+1 ; i++)
+int rechercheParNom(Joueur equipe[LIST_LENGHT], char joueurNom[MAX_CHARACTER_SIZE], int listJoueurLen)
+{
+    for (int i = 0; i <= listJoueurLen; i++)
     {
-        if (strcmp(equipe[i-1].nomJoueur, joueurNom) == 0)
+        if (strcmp(equipe[i].nomJoueur, joueurNom) == 0)
         {
             return i;
         }
     }
-    return 0;
-}
-int supprimerParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen) {
-    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
-    if (rechercheResultat != 0) 
-    {
-        for (int i = rechercheResultat ; i<=listJoueurLen ; i++)
-        {
-            strcpy(equipe[i].nomJoueur, equipe[i+1].nomJoueur);
-            equipe[i].numeroMaillot = equipe[i+1].numeroMaillot;
-            strcpy(equipe[i].posteJoueur, equipe[i+1].posteJoueur);
-            equipe[i].ageJoueur = equipe[i+1].ageJoueur;
-            equipe[i].buts = equipe[i+1].buts;
-            strcpy(equipe[i].dateInscription, equipe[i+1].dateInscription);
-            strcpy(equipe[i].statutJoueur, equipe[i+1].statutJoueur);
-        }
-        return --listJoueurLen;
-        
-    }
     return -1;
 }
-int modifierPostParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauPoste[MAX_CHARACTER_SIZE]) {
-    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
-    if (rechercheResultat != 0) 
+int supprimerParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
+{
+    int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
+    if (rechercheResultat != -1)
+    {
+        for (int i = rechercheResultat; i < listJoueurLen; i++)
+        {
+            strcpy(equipe[i].nomJoueur, equipe[i + 1].nomJoueur);
+            equipe[i].numeroMaillot = equipe[i + 1].numeroMaillot;
+            strcpy(equipe[i].posteJoueur, equipe[i + 1].posteJoueur);
+            equipe[i].ageJoueur = equipe[i + 1].ageJoueur;
+            equipe[i].buts = equipe[i + 1].buts;
+            strcpy(equipe[i].dateInscription, equipe[i + 1].dateInscription);
+            strcpy(equipe[i].statutJoueur, equipe[i + 1].statutJoueur);
+        }
+        return listJoueurLen - 1;
+    }
+    return listJoueurLen;
+}
+int modifierPostParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauPoste[MAX_CHARACTER_SIZE])
+{
+    int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
+    if (rechercheResultat != -1)
     {
         strcpy(equipe[rechercheResultat].posteJoueur, noveauPoste);
         return 1;
     }
     return 0;
 }
-int modifierAgeParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauAge) {
-    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
-    if (rechercheResultat != 0) 
+int modifierAgeParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauAge)
+{
+    int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
+    if (rechercheResultat != -1)
     {
         equipe[rechercheResultat].ageJoueur = noveauAge;
         return 1;
     }
     return 0;
 }
-int modifierButsParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauButs) {
-    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
-    if (rechercheResultat != 0) 
+int modifierButsParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauButs)
+{
+    int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
+    if (rechercheResultat != -1)
     {
         equipe[rechercheResultat].buts = noveauButs;
         return 1;
     }
     return 0;
 }
-int modifierStatutParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauStatut[MAX_CHARACTER_SIZE]) {
-    int rechercheResultat = rechercheParId(equipe, joueurId,listJoueurLen);
-    if (rechercheResultat != 0) 
+int modifierStatutParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauStatut[MAX_CHARACTER_SIZE])
+{
+    int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
+    if (rechercheResultat != -1)
     {
         strcpy(equipe[rechercheResultat].statutJoueur, noveauStatut);
         return 1;
@@ -210,65 +204,62 @@ int modifierStatutParId (Joueur equipe[LIST_LENGHT], int joueurId, int listJoueu
     return 0;
 }
 
-
-int meilleurButeur (Joueur equipe[LIST_LENGHT], int listJoueurLen) 
+int meilleurButeur(Joueur equipe[LIST_LENGHT], int listJoueurLen)
 {
     int maxButs = equipe[0].buts;
     int meilleurButeurIdx = 0;
-    for(int i=1 ; i<=listJoueurLen ; i++)
+    for (int i = 1; i <= listJoueurLen; i++)
     {
         if (equipe[i].buts > maxButs)
         {
             maxButs = equipe[i].buts;
-            meilleurButeurIdx = i ;
+            meilleurButeurIdx = i;
         }
     }
     return meilleurButeurIdx;
 }
-int joueurPlusAges (Joueur equipe[LIST_LENGHT], int listJoueurLen) 
+int joueurPlusAges(Joueur equipe[LIST_LENGHT], int listJoueurLen)
 {
     int plusAges = equipe[0].ageJoueur;
     int plusAgesIdx = 0;
-    for(int i=1 ; i<=listJoueurLen ; i++)
+    for (int i = 1; i <= listJoueurLen; i++)
     {
         if (equipe[i].ageJoueur > plusAges)
         {
             plusAges = equipe[i].ageJoueur;
-            plusAgesIdx = i ;
+            plusAgesIdx = i;
         }
     }
     return plusAgesIdx;
 }
-int joueurplusJeune (Joueur equipe[LIST_LENGHT], int listJoueurLen) 
+int joueurplusJeune(Joueur equipe[LIST_LENGHT], int listJoueurLen)
 {
     int plusJeune = equipe[0].ageJoueur;
     int plusJeuneIdx = 0;
-    for(int i=1 ; i<=listJoueurLen ; i++)
+    for (int i = 1; i <= listJoueurLen; i++)
     {
         if (equipe[i].ageJoueur < plusJeune)
         {
             plusJeune = equipe[i].ageJoueur;
-            plusJeuneIdx = i ;
+            plusJeuneIdx = i;
         }
     }
     return plusJeuneIdx;
 }
 
-
 void main()
 {
     Joueur equipe[LIST_LENGHT] = {
-    {1, "Lionel Messi(GOAT)", 10, "Attaquant", 36, 815, "2004-10-16", "titulaire"},
-    {2, "Cristiano Ronaldo(GOAT)", 7, "Attaquant", 40, 900, "2003-08-12", "titulaire"},
-    {3, "Kylian Mbappe", 7, "Attaquant", 26, 220, "2015-12-02", "titulaire"},
-    {4, "Neymar Jr", 10, "Attaquant", 31, 140, "2013-07-03", "remplacant"},
-    {5, "Kevin De Bruyne", 17, "Milieu", 33, 90, "2008-11-25", "titulaire"},
-    {6, "Virgil van Dijk", 4, "Defenseur", 32, 25, "2015-07-01", "titulaire"},
-    {7, "Luka Modric", 10, "Milieu", 37, 45, "2005-11-01", "remplacant"},
-    {8, "Robert Lewandowski", 9, "Attaquant", 36, 350, "2008-03-01", "titulaire"},
-    {9, "Alisson Becker", 1, "Gardien", 31, 0, "2016-07-25", "titulaire"},
-    {10, "Sergio Ramos", 4, "Defenseur", 37, 100, "2004-08-01", "remplacant"}
-    };
+        {1, "Lionel Messi(GOAT)", 10, "Attaquant", 36, 815, "2004-10-16", "titulaire"},
+        {2, "Cristiano Ronaldo(GOAT)", 7, "Attaquant", 40, 900, "2003-08-12", "titulaire"},
+        {3, "Kylian Mbappe", 7, "Attaquant", 26, 220, "2015-12-02", "titulaire"},
+        {4, "Neymar Jr", 10, "Attaquant", 31, 140, "2013-07-03", "remplacant"},
+        {5, "Kevin De Bruyne", 17, "Milieu", 33, 90, "2008-11-25", "titulaire"},
+        {6, "Virgil van Dijk", 4, "Defenseur", 32, 25, "2015-07-01", "titulaire"},
+        {7, "Luka Modric", 10, "Milieu", 37, 45, "2005-11-01", "remplacant"},
+        {8, "Robert Lewandowski", 9, "Attaquant", 36, 350, "2008-03-01", "titulaire"},
+        {9, "Alisson Becker", 1, "Gardien", 31, 0, "2016-07-25", "titulaire"},
+        {10, "Sergio Ramos", 4, "Defenseur", 37, 100, "2004-08-01", "remplacant"}};
 
     int actNmbr;
     int listJoueurLen = 9;
@@ -281,9 +272,16 @@ void main()
         printf("\n4 - Supprimer un joueur");
         printf("\n5 - Rechercher un joueu");
         printf("\n6 - Statistiques");
-        printf("\n0 - Exit\n -> ");
+        printf("\n0 - Quitez\n -> ");
 
-        scanf("%d", &actNmbr);
+        // scanf("%d", &actNmbr);
+        if (scanf("%d", &actNmbr) != 1)
+        {
+            printf("\nEntree invalide! Veuillez entrer un nombre.\n");
+            viderBufferEntree();
+            actNmbr = -1;
+            continue;
+        }
 
         switch (actNmbr)
         {
@@ -292,19 +290,31 @@ void main()
             printf("\n-----------Insertion du joueur-----------\n");
             printf("\n1 - Ajouter un seul joueur");
             printf("\n2 - Ajouter plusieur joueurs\n -> ");
-            scanf("%d", &ajtActNmbr);
+            // scanf("%d", &ajtActNmbr);
+            if (scanf("%d", &ajtActNmbr) != 1)
+            {
+                printf("\nEntree invalide! Veuillez entrer un nombre.\n");
+                viderBufferEntree();
+                break;
+            }
             switch (ajtActNmbr)
             {
             case 1:
-                listJoueurLen = ajouterJoueur(equipe);
+                listJoueurLen = ajouterJoueur(equipe, listJoueurLen);
                 break;
             case 2:
                 int nmbrJoueurAjouter;
                 printf("\nEntrer le nombre de joueurs que veux ajouter :");
-                scanf("%d", &nmbrJoueurAjouter);
+                // scanf("%d", &nmbrJoueurAjouter);
+                if (scanf("%d", &nmbrJoueurAjouter) != 1)
+                {
+                    printf("\nID invalide!\n");
+                    viderBufferEntree();
+                    break;
+                }
                 for (int i = 0; i < nmbrJoueurAjouter; i++)
                 {
-                    listJoueurLen = ajouterJoueur(equipe);
+                    listJoueurLen = ajouterJoueur(equipe, listJoueurLen);
                 }
                 break;
 
@@ -326,8 +336,14 @@ void main()
                 printf("\n1 - Trier les joueurs par ordre alphabetique");
                 printf("\n2 - Trier les joueurs par age");
                 printf("\n3 - Afficher les joueurs par poste");
-                printf("\n0 - Exit\n -> ");
-                scanf("%d", &affActNmbr);
+                printf("\n0 - Quitez\n -> ");
+                // scanf("%d", &affActNmbr);
+                if (scanf("%d", &affActNmbr) != 1)
+                {
+                    printf("\nEntree invalide! Veuillez entrer un nombre.\n");
+                    viderBufferEntree();
+                    break;
+                }
 
                 switch (affActNmbr)
                 {
@@ -368,24 +384,44 @@ void main()
             int idJoueurModifier;
             printf("\n-----------Modifier un joueur-----------\n");
             printf("\nEntrer l'id de joueur qui peut modifier : ");
-            scanf("%d", &idJoueurModifier);
+            // scanf("%d", &idJoueurModifier);
+            if (scanf("%d", &idJoueurModifier) != 1)
+            {
+                printf("\nID invalide!\n");
+                viderBufferEntree();
+                break;
+            }
             int modActNmbr;
             int modifierResultat;
-            
+
             do
             {
-                printf("\n1 - Modifier le poste de %s", equipe[idJoueurModifier-1].nomJoueur);
-                printf("\n2 - Modifier l'age de %s", equipe[idJoueurModifier-1].nomJoueur);
-                printf("\n3 - Modifier le nombre de buts marques par %s", equipe[idJoueurModifier-1].nomJoueur);
-                printf("\n0 - Exit\n -> ");
-                scanf("%d", &modActNmbr);
+                int joueurIdx = rechercheParId(equipe, idJoueurModifier, listJoueurLen);
+                if (joueurIdx != -1)
+                {
+                    printf("\n1 - Modifier le poste de %s", equipe[idJoueurModifier - 1].nomJoueur);
+                    printf("\n2 - Modifier l'age de %s", equipe[idJoueurModifier - 1].nomJoueur);
+                    printf("\n3 - Modifier le nombre de buts marques par %s", equipe[idJoueurModifier - 1].nomJoueur);
+                    printf("\n0 - Quitez\n -> ");
+                }
+                else
+                {
+                    printf("\nJoueur non trouvé!");
+                }
+                // scanf("%d", &modActNmbr);
+                if (scanf("%d", &modActNmbr) != 1)
+                {
+                    printf("\nEntree invalide! Veuillez entrer un nombre.\n");
+                    viderBufferEntree();
+                    break;
+                }
 
                 switch (modActNmbr)
                 {
                 case 1:
                     char noveauPoste[MAX_CHARACTER_SIZE];
                     getchar();
-                    printf("\nEntrer le noveau post de %s :", equipe[idJoueurModifier-1].nomJoueur);
+                    printf("\nEntrer le noveau post de %s :", equipe[idJoueurModifier - 1].nomJoueur);
                     fgets(noveauPoste, sizeof(noveauPoste), stdin);
                     noveauPoste[strcspn(noveauPoste, "\n")] = '\0';
                     modifierResultat = modifierPostParId(equipe, idJoueurModifier, listJoueurLen, noveauPoste);
@@ -397,16 +433,22 @@ void main()
                     {
                         printf("\nn' pas modifier!\n");
                     }
-                    
+
                     break;
                 case 2:
                     int noveauAge;
-                    printf("\nEntrer le noveau age de %s :", equipe[idJoueurModifier-1].nomJoueur);
-                    scanf("%d", &noveauAge);
+                    printf("\nEntrer le noveau age de %s :", equipe[idJoueurModifier - 1].nomJoueur);
+                    // scanf("%d", &noveauAge);
+                    if (scanf("%d", &noveauAge) != 1)
+                    {
+                        printf("\nAge invalide!\n");
+                        viderBufferEntree();
+                        break;
+                    }
                     modifierResultat = modifierAgeParId(equipe, idJoueurModifier, listJoueurLen, noveauAge);
                     if (modifierResultat != 0)
                     {
-                        printf("\nmodifie avec seccese!\n");
+                        printf("\nmodifier avec secces!\n");
                     }
                     else
                     {
@@ -415,12 +457,18 @@ void main()
                     break;
                 case 3:
                     int noveauButs;
-                    printf("\nEntrer le noveau buts de %s :", equipe[idJoueurModifier-1].nomJoueur);
-                    scanf("%d", &noveauButs);
+                    printf("\nEntrer le noveau buts de %s :", equipe[idJoueurModifier - 1].nomJoueur);
+                    // scanf("%d", &noveauButs);
+                    if (scanf("%d", &noveauButs) != 1)
+                    {
+                        printf("\nButs invalide!\n");
+                        viderBufferEntree();
+                        break;
+                    }
                     modifierResultat = modifierButsParId(equipe, idJoueurModifier, listJoueurLen, noveauButs);
                     if (modifierResultat != 0)
                     {
-                        printf("\nmodifie avec seccese!\n");
+                        printf("\nmodifier avec secces!\n");
                     }
                     else
                     {
@@ -442,42 +490,60 @@ void main()
             int supprissionResultat;
             printf("\n-----------Supprimer un joueur-----------\n");
             printf("Entrer l'id de joueur : ");
-            scanf("%d", &joueurId);
-            supprissionResultat = supprimerParId(equipe, joueurId, listJoueurLen);
-            if (supprissionResultat != -1)
+            // scanf("%d", &joueurId);
+            if (scanf("%d", &joueurId) != 1)
             {
-                printf("supprission avec secces!\n");
+                printf("\nID invalide!\n");
+                viderBufferEntree();
+                break;
+            }
+            supprissionResultat = supprimerParId(equipe, joueurId, listJoueurLen);
+            if (supprissionResultat < listJoueurLen)
+            {
+                printf("suppression avec succes!\n");
                 listJoueurLen = supprissionResultat;
             }
             else
             {
-                printf("erreur de suprission!\n");
+                printf("Joueur non trouve!\n");
             }
             break;
-            
+
         case 5:
             int rechActNmbr;
             int rechercheResltat;
             printf("\n-----------Rechercher un joueur-----------\n");
             printf("\n1 - Rechercher par l'id");
             printf("\n2 - Rechercher par le nom\n -> ");
-            scanf("%d", &rechActNmbr);
+            // scanf("%d", &rechActNmbr);
+            if (scanf("%d", &rechActNmbr) != 1)
+            {
+                printf("\nEntree invalide! Veuillez entrer un nombre.\n");
+                viderBufferEntree();
+                break;
+            }
             switch (rechActNmbr)
             {
             case 1:
                 int joueurId;
                 printf("Entrer l'id de joueur : ");
-                scanf("%d", &joueurId);
-                rechercheResltat = rechercheParId(equipe, joueurId, listJoueurLen);
-                if (rechercheResltat != 0)
+                // scanf("%d", &joueurId);
+                if (scanf("%d", &joueurId) != 1)
                 {
-                    printf("il exist!\n");
+                    printf("\nID invalide!\n");
+                    viderBufferEntree();
+                    break;
+                }
+                rechercheResltat = rechercheParId(equipe, joueurId, listJoueurLen);
+                if (rechercheResltat != -1)
+                {
+                    printf("il existe!");
                 }
                 else
                 {
-                    printf("n' exist pas!\n");
+                    printf("n'existe pas!\n");
                 }
-                
+
                 break;
             case 2:
                 char joueurNom[MAX_CHARACTER_SIZE];
@@ -486,13 +552,13 @@ void main()
                 fgets(joueurNom, sizeof(joueurNom), stdin);
                 joueurNom[strcspn(joueurNom, "\n")] = '\0';
                 rechercheResltat = rechercheParNom(equipe, joueurNom, listJoueurLen);
-                if (rechercheResltat != 0)
+                if (rechercheResltat != -1)
                 {
-                    printf("il exist!");
+                    printf("il existe à l'index %d!\n", rechercheResltat);
                 }
                 else
                 {
-                    printf("n' exist pas!");
+                    printf("n'existe pas!\n");
                 }
                 break;
 
@@ -510,48 +576,66 @@ void main()
             printf("\n4 - Afficher les joueurs ayant marque plus de X buts");
             printf("\n5 - Afficher le meilleur buteur");
             printf("\n6 - Afficher le joueur le plus jeune et le plus age");
-            printf("\n0 - Exit\n -> ");
-            scanf("%d", &statActNmbr);
+            printf("\n0 - Quitez\n -> ");
+            // scanf("%d", &statActNmbr);
+            if (scanf("%d", &statActNmbr) != 1)
+            {
+                printf("\nEntree invalide! Veuillez entrer un nombre.\n");
+                viderBufferEntree();
+                break;
+            }
             switch (statActNmbr)
             {
             case 1:
                 printf("\n\nLe nombre total de joueurs dans l'equipe est %d\n", listJoueurLen);
                 break;
             case 2:
-            int idJoueurModifierStatut;
-            printf("\nEntrer l'id de joueur qui peut modifier : ");
-            scanf("%d", &idJoueurModifierStatut);
-            char noveauStatut[MAX_CHARACTER_SIZE];
+                int idJoueurModifierStatut;
+                printf("\nEntrer l'id de joueur qui peut modifier : ");
+                // scanf("%d", &idJoueurModifierStatut);
+                if (scanf("%d", &idJoueurModifierStatut) != 1)
+                {
+                    printf("\nID invalide!\n");
+                    viderBufferEntree();
+                    break;
+                }
+                char noveauStatut[MAX_CHARACTER_SIZE];
                 getchar();
-                printf("\nEntrer le noveau statut de %s (titulaire ou remplacant) :", equipe[idJoueurModifierStatut-1].nomJoueur);
+                printf("\nEntrer le noveau statut de %s (titulaire ou remplacant) :", equipe[idJoueurModifierStatut - 1].nomJoueur);
                 fgets(noveauStatut, sizeof(noveauStatut), stdin);
                 noveauStatut[strcspn(noveauStatut, "\n")] = '\0';
                 modifierResultat = modifierStatutParId(equipe, idJoueurModifierStatut, listJoueurLen, noveauStatut);
                 if (modifierResultat != 0)
                 {
-                    printf("\nmodifie avec seccese!\n");
+                    printf("\nmodifie avec secces!\n");
                 }
                 else
                 {
                     printf("\nn' pas modifier!\n");
                 }
-                
+
                 break;
             case 3:
-                int ageSomme = 0 ;
+                int ageSomme = 0;
                 int ageMoyenne;
-                for (int i=0 ; i<=listJoueurLen ; i++)
+                for (int i = 0; i <= listJoueurLen; i++)
                 {
-                    ageSomme +=equipe[i].ageJoueur;
+                    ageSomme += equipe[i].ageJoueur;
                 }
-                ageMoyenne = ageSomme / (listJoueurLen+1);
+                ageMoyenne = ageSomme / (listJoueurLen + 1);
                 printf("\nl'age moyen des joueurs est %d\n", ageMoyenne);
                 break;
             case 4:
-                int nmbrButs; 
+                int nmbrButs;
                 printf("\nEntrer un nombre du buts : ");
-                scanf("%d", &nmbrButs);
-                for (int i=0 ; i<=listJoueurLen ; i++)
+                // scanf("%d", &nmbrButs);
+                if (scanf("%d", &nmbrButs) != 1)
+                {
+                    printf("\nNombre invalide!\n");
+                    viderBufferEntree();
+                    break;
+                }
+                for (int i = 0; i <= listJoueurLen; i++)
                 {
                     if (equipe[i].buts >= nmbrButs)
                     {
@@ -570,7 +654,7 @@ void main()
                 {
                     printf("\ntous les joueurs 0 buts!!\n");
                 }
-                
+
                 break;
             case 6:
                 int plusAgesIdx;
@@ -578,7 +662,7 @@ void main()
                 plusAgesIdx = joueurPlusAges(equipe, listJoueurLen);
                 plusJeuneIdx = joueurplusJeune(equipe, listJoueurLen);
 
-                if (plusAgesIdx != 0 && plusJeuneIdx != 0 )
+                if (plusAgesIdx != 0 && plusJeuneIdx != 0)
                 {
                     printf("\n\nLe joueur plus ages :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", equipe[plusAgesIdx].idJoueur, equipe[plusAgesIdx].nomJoueur, equipe[plusAgesIdx].numeroMaillot, equipe[plusAgesIdx].posteJoueur, equipe[plusAgesIdx].ageJoueur, equipe[plusAgesIdx].buts, equipe[plusAgesIdx].dateInscription, equipe[plusAgesIdx].statutJoueur);
                     printf("\n\nLe joueur plus jeune :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", equipe[plusJeuneIdx].idJoueur, equipe[plusJeuneIdx].nomJoueur, equipe[plusJeuneIdx].numeroMaillot, equipe[plusJeuneIdx].posteJoueur, equipe[plusJeuneIdx].ageJoueur, equipe[plusJeuneIdx].buts, equipe[plusJeuneIdx].dateInscription, equipe[plusJeuneIdx].statutJoueur);
@@ -591,7 +675,6 @@ void main()
 
             case 0:
                 break;
-
 
             default:
                 printf("\nInvalid!");
@@ -608,6 +691,3 @@ void main()
 
     } while (actNmbr != 0);
 }
-
-
-
