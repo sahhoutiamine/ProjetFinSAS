@@ -2,18 +2,19 @@
 #include <string.h>
 
 #define LIST_LENGHT 100
-#define MAX_CHARACTER_SIZE 64
+#define MAX_CHAR 64
+#define STAR_TAG " (Star!)"
 
 typedef struct
 {
     int idJoueur;
-    char nomJoueur[MAX_CHARACTER_SIZE];
+    char nomJoueur[MAX_CHAR];
     int numeroMaillot;
-    char posteJoueur[MAX_CHARACTER_SIZE];
+    char posteJoueur[MAX_CHAR];
     int ageJoueur;
     int buts;
-    char dateInscription[MAX_CHARACTER_SIZE];
-    char statutJoueur[MAX_CHARACTER_SIZE];
+    char dateInscription[MAX_CHAR];
+    char statutJoueur[MAX_CHAR];
 } Joueur;
 
 void viderBufferEntree()
@@ -24,7 +25,7 @@ void viderBufferEntree()
 }
 int genererIdAuto(int listJoueurLen)
 {
-    int idCmp = listJoueurLen + 1;
+    int idCmp = listJoueurLen + 2;
     return idCmp++;
 }
 
@@ -133,7 +134,7 @@ int rechercheParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
     return -1;
 }
 
-int rechercheParNom(Joueur equipe[LIST_LENGHT], char joueurNom[MAX_CHARACTER_SIZE], int listJoueurLen)
+int rechercheParNom(Joueur equipe[LIST_LENGHT], char joueurNom[MAX_CHAR], int listJoueurLen)
 {
     for (int i = 0; i <= listJoueurLen; i++)
     {
@@ -164,7 +165,7 @@ int supprimerParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen)
     }
     return listJoueurLen;
 }
-int modifierPostParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauPoste[MAX_CHARACTER_SIZE])
+int modifierPostParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauPoste[MAX_CHAR])
 {
     int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
     if (rechercheResultat != -1)
@@ -184,22 +185,35 @@ int modifierAgeParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen
     }
     return 0;
 }
+
 int modifierButsParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, int noveauButs)
 {
-    char nomAvecStar;
     int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
-    if (rechercheResultat != -1)
-    {
-        if (equipe[rechercheResultat].buts + 10 <= noveauButs) {
-            nomAvecStar = strcat(equipe[rechercheResultat].nomJoueur, " (Star!)");
-            strcpy(equipe[rechercheResultat].nomJoueur, nomAvecStar);
-        }
-        equipe[rechercheResultat].buts = noveauButs;
-        return 1;
+    if (rechercheResultat == -1) {
+        return 0;
     }
-    return 0;
+
+    int anciensButs = equipe[rechercheResultat].buts;
+    int butsMarques = noveauButs - anciensButs;
+
+    
+    for (int i = 0; i < listJoueurLen; i++) {
+        char* tagPosition = strstr(equipe[i].nomJoueur, STAR_TAG);
+        if (tagPosition != NULL) {
+            *tagPosition = '\0'; 
+        }
+    }
+
+    if (butsMarques >= 3) {
+        strcat(equipe[rechercheResultat].nomJoueur, STAR_TAG);
+    }
+
+    equipe[rechercheResultat].buts = noveauButs;
+
+    return 1;
 }
-int modifierStatutParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauStatut[MAX_CHARACTER_SIZE])
+
+int modifierStatutParId(Joueur equipe[LIST_LENGHT], int joueurId, int listJoueurLen, char noveauStatut[MAX_CHAR])
 {
     int rechercheResultat = rechercheParId(equipe, joueurId, listJoueurLen);
     if (rechercheResultat != -1)
@@ -425,7 +439,7 @@ void main()
                 switch (modActNmbr)
                 {
                 case 1:
-                    char noveauPoste[MAX_CHARACTER_SIZE];
+                    char noveauPoste[MAX_CHAR];
                     getchar();
                     printf("\nEntrer le noveau post de %s :", equipe[idJoueurModifier - 1].nomJoueur);
                     fgets(noveauPoste, sizeof(noveauPoste), stdin);
@@ -506,7 +520,7 @@ void main()
             supprissionResultat = supprimerParId(equipe, joueurId, listJoueurLen);
             if (supprissionResultat < listJoueurLen)
             {
-                printf("suppression avec succes!\n");
+                printf("\nsuppression avec succes!\n");
                 listJoueurLen = supprissionResultat;
             }
             else
@@ -552,7 +566,7 @@ void main()
 
                 break;
             case 2:
-                char joueurNom[MAX_CHARACTER_SIZE];
+                char joueurNom[MAX_CHAR];
                 getchar();
                 printf("Entrer le nom de joueur : ");
                 fgets(joueurNom, sizeof(joueurNom), stdin);
@@ -593,7 +607,7 @@ void main()
             switch (statActNmbr)
             {
             case 1:
-                printf("\n\nLe nombre total de joueurs dans l'equipe est %d\n", listJoueurLen);
+                printf("\n\nLe nombre total de joueurs dans l'equipe est %d\n", listJoueurLen+1);
                 break;
             case 2:
                 int idJoueurModifierStatut;
@@ -605,7 +619,7 @@ void main()
                     viderBufferEntree();
                     break;
                 }
-                char noveauStatut[MAX_CHARACTER_SIZE];
+                char noveauStatut[MAX_CHAR];
                 getchar();
                 printf("\nEntrer le noveau statut de %s (titulaire ou remplacant) :", equipe[idJoueurModifierStatut - 1].nomJoueur);
                 fgets(noveauStatut, sizeof(noveauStatut), stdin);
@@ -654,7 +668,7 @@ void main()
                 meilleurButeurIdx = meilleurButeur(equipe, listJoueurLen);
                 if (meilleurButeurIdx != 0)
                 {
-                    printf("\n\nLe meilleur buteur(GSOAT) :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", equipe[meilleurButeurIdx].idJoueur, equipe[meilleurButeurIdx].nomJoueur, equipe[meilleurButeurIdx].numeroMaillot, equipe[meilleurButeurIdx].posteJoueur, equipe[meilleurButeurIdx].ageJoueur, equipe[meilleurButeurIdx].buts, equipe[meilleurButeurIdx].dateInscription, equipe[meilleurButeurIdx].statutJoueur);
+                    printf("\n\nLe meilleur buteur (GSOT) :\nL'id : %d\nLe nom : %s\nLe numero maillot : %d\nLe poste : %s\nL'age : %d\nNombre de buts : %d\nLa date inscription : %s\nStatut : %s", equipe[meilleurButeurIdx].idJoueur, equipe[meilleurButeurIdx].nomJoueur, equipe[meilleurButeurIdx].numeroMaillot, equipe[meilleurButeurIdx].posteJoueur, equipe[meilleurButeurIdx].ageJoueur, equipe[meilleurButeurIdx].buts, equipe[meilleurButeurIdx].dateInscription, equipe[meilleurButeurIdx].statutJoueur);
                 }
                 else
                 {
